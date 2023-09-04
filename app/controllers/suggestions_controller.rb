@@ -20,10 +20,4 @@ class SuggestionsController < ApplicationController
         @favorite.suggestion = @suggestion
         redirect_to suggestion_path(@suggestion)
     end
-    
-    # private
-    
-    # def favorite_params
-    #   permit(:favorite).require(:user_id)
-    # end
 end
