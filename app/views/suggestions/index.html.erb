@@ -41,16 +41,6 @@
             </p>
           </div>
             <div id="map"></div>
-            <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoicHJhY2hpMjUiLCJhIjoiY2xtM3Q1N2lyNDY0bTNxdGh1eG1vMW94MCJ9.eRtL5A5z0SDvt0ViEDskCw';
-        var map = new mapboxgl.Map({
-          container: 'map',
-          style: 'mapbox://styles/mapbox/streets-v12',
-          center: [<%= suggestion.longitude %>, <%= suggestion.latitude %>],
-          zoom: 14
-        });
-
-      </script>
         </div>
       </div>
     <% end %>
