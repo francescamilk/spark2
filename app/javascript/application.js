@@ -4,6 +4,7 @@ import "controllers"
 import "@popperjs/core"
 import "bootstrap"
 
+
 import OpenAI from 'openai';
 
  const openai = new OpenAI({

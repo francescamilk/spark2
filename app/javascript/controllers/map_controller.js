@@ -9,6 +9,8 @@ export default class extends Controller {
   }
 
   connect() {
+    console.log('HELLO')
+
     mapboxgl.accessToken = this.apiKeyValue
     this.map = new mapboxgl.Map({
       container: this.element,
@@ -16,13 +18,12 @@ export default class extends Controller {
     })
     this.#addMarkersToMap()
     this.#fitMapToMarkers()
-    console.log('hello')
     // this.map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken, mapboxgl: mapboxgl }))
   }
 
   #addMarkersToMap() {
     this.markersValue.forEach((marker) => {
-        const popup = new mapboxgl.Popup().setHTML(marker.info_window_html)
+        const popup = new mapboxgl.Popup().setH TML(marker.info_window_html)
 
         // const customMarker = document.createElement("div");
         // customMarker.innerHTML = marker.marker_html;
