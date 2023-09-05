@@ -2,8 +2,8 @@ class SuggestionsController < ApplicationController
   skip_before_action :authenticate_user!, only: %i[index show]
 
   def index
-    @suggestions   = Suggestion.all
-    @my_suggestion = Suggestion.last
+    @suggestions = Suggestion.all
+    # @my_suggestion = Suggestion.first
     # loop do
     #   suggestion = suggestions_list.sample
     #   if current_user.swipes.include?(suggestion.id)
@@ -18,8 +18,8 @@ class SuggestionsController < ApplicationController
   def show
     @suggestion = Suggestion.find(params[:id])
     @markers = [{
-        lat: @suggestion.latitude,
-        lng: @suggestion.longitude
+      lat: @suggestion.latitude,
+      lng: @suggestion.longitude
     }]
   end
 
@@ -30,6 +30,12 @@ class SuggestionsController < ApplicationController
     @favorite.suggestion = @suggestion
     redirect_to suggestion_path(@suggestion)
   end
+
+  # private
+
+  # def favorite_params
+  #   permit(:favorite).require(:user_id)
+  # end
 
   private
 
