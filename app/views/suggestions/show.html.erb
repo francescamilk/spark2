@@ -34,7 +34,7 @@
                   <%= @suggestion.overview %>
                 </p>
               </p>
-
+              <button id="whatsapp-share-button">Share on WhatsApp</button>
             </div>
           </div>
         </div>
@@ -62,29 +62,40 @@
         </div>
       </div>
 
-      <script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const whatsappButton = document.getElementById("whatsapp-share-button");
+  whatsappButton.addEventListener("click", function () {
+    const pageUrl = window.location.href;
+    const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(pageUrl)}`;
+    window.location.href = whatsappUrl;
+  });
+});
+</script>
+
+<script>
   const coordinates = document.getElementById('coordinates');
-    const addressElement = document.getElementById('address');
+  const addressElement = document.getElementById('address');
 
   accessToken=  'pk.eyJ1IjoicHJhY2hpMjUiLCJhIjoiY2xtM3Q1N2lyNDY0bTNxdGh1eG1vMW94MCJ9.eRtL5A5z0SDvt0ViEDskCw';
   mapboxgl.accessToken = accessToken;
   console.log(coordinates.dataset.longitude)
   const map = new mapboxgl.Map({
-  container: 'map',
-  // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
-  style: 'mapbox://styles/mapbox/streets-v12',
-  center: [coordinates.dataset.longitude, coordinates.dataset.latitude],
-  zoom: 15
-});
+    container: 'map',
+    // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [coordinates.dataset.longitude, coordinates.dataset.latitude],
+    zoom: 15
+  });
 
 
-   new mapboxgl.Marker()
+  new mapboxgl.Marker()
   .setLngLat([coordinates.dataset.longitude, coordinates.dataset.latitude])
-   .addTo(map);
+  .addTo(map);
 
    const apiUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates.dataset.longitude},${coordinates.dataset.latitude}.json?access_token=${accessToken}`;
     // Make a GET request to the API
-fetch(apiUrl)
+  fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
         if (data.features && data.features.length > 0) {
@@ -99,16 +110,4 @@ fetch(apiUrl)
         console.error('Error fetching address:', error);
         addressElement.textContent = 'Error fetching address';
     });
-    </script>
-
-      <%# // Add the control to the map.
-// map.addControl(
-// new MapboxGeocoder({
-// accessToken: mapboxgl.accessToken,
-// mapboxgl: mapboxgl
-// })
-// );
-const el = document.createElement('div');
-  el.className = 'marker';
-
-//   // make a marker for each feature and add to the map %>
+</script>
