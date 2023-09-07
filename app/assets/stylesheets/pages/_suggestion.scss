@@ -6,8 +6,49 @@
 *::after {
   box-sizing: border-box;
 }
+swiper-container {
+  width: 340px;
+  height: 420px;
+}
 
-.love {
+swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+  background-color: rgb(255, 255, 255);
+}
+
+#spark-dates {
+  background-color: #f4f4f4;
+  padding: 1rem;
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 150;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  color: #948e8e;
+}
+
+
+#img-fav {
+  position: relative;
+  display: inline-block;
+}
+
+#heart {
+  position: absolute;
+  color: white;
+  font-size: 28px;
+  top: 24px;
+  right: 18px;
+}
+
+.heart {
   position: absolute;
   right: 40px;
   top: 110px;
@@ -108,7 +149,7 @@
   font-family: 'Montserrat', sans-serif;
   font-size: 0.875rem;
   line-height: 1.5;
-  margin-bottom: 1.25rem;    
+  margin-bottom: 1.25rem;
   font-weight: 400;
 }
 

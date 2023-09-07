@@ -1,67 +1,129 @@
-
-      <div class="card bg-dark text-white" style="height: 150px;">
-        <%#= image_tag("dashboard.jpeg", class: "card-img", alt: "Card image") %>
-        <div class="card-img-overlay"></div>
-      </div>
-
-      <div class="container" style="margin-top: 20px">
-        <div class="card mb-3 suggestion-cards" style='overflow: hidden'>
-          <% if @suggestion.images.present? %>
+<div class="container" style="margin-top: 70px">
+  <div class="card mb-3 suggestion-cards" style='overflow: hidden'>
+    <% if @suggestion.images.empty? %>
+      <%= image_tag("https://source.unsplash.com/random/?date", class: "card-img-top") %>
+    <% else %>
+      <div id="myCarousel" class="carousel slide carousel-fade" data-bs-touch="true" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
             <%= image_tag(
-              @suggestion.images[0],
-              class: "card-img-top",
-              style: "max-height: 250px"
-            ) %>
-            <%# <i class="fa-solid fa-heart love fa-2xl" style="color: #db3333;"></i> %>
-          <% else %>
-            <%#= image_tag("food-01.jpg", class: "card-img-top") %>
-          <% end %>
-          <div class="suggestion-cards-info">
-            <h5
-              class="card-title"
-              style="padding-top: 15px; font-weight: 700; letter-spacing: 1px; padding-bottom: 5px; "
-            ><%= @suggestion.title %></h5>
-            <div>
-              <p class="card-text b-5"><i class="fa-solid fa-location-dot"></i>
-                <%= @suggestion.city %>
-                &nbsp;
-                <%= @suggestion.sub_category %>
-                &nbsp;
-                <i class="fa-solid fa-star" style="color: #992944; font-size: 14px">
-                  <%= @suggestion.rating %></i>
-                <p class="pt-0 pb-0 mb-0">Description:</p>
-                <p>
-                  <%= @suggestion.overview %>
-                </p>
-              </p>
-              <button id="whatsapp-share-button">Share on WhatsApp</button>
-            </div>
+                @suggestion.images[0],
+                class: "card-img-top",
+                style: "max-height: 250px; object-fit: cover",
+                alt: "date"
+              ) %>
           </div>
+          <% @suggestion.images.drop(1).each do |image| %>
+            <div class="carousel-item">
+              <%= image_tag(
+                  image,
+                  class: "card-img-top",
+                  style: "max-height: 250px; object-fit: cover",
+                  alt: "date"
+                ) %>
+            </div>
+          <% end %>
         </div>
-        <div class="card mb-3 suggestion-cards" style='overflow: hidden'>
-          <div class="suggestion-cards-info">
-            <h5
-              class="card-title"
-              style="padding-top: 15px; font-weight: 700; letter-spacing: 1px; padding-bottom: 5px; "
+        <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    <% end %>
+    <div style='height: 0px'>
+      <% if current_user %>
+        <% if current_user.favorites.where(suggestion: @suggestion).empty? %>
+          <%= simple_form_for [@suggestion, @favorite] do |f| %>
+            <input type="hidden" id="referrer" name="referrer" value="show" />
+            <%= f.button :button do %>
+              <i id="heart" class="fa-regular fa-heart fa-xl"></i>
+            <% end %>
+          <% end %>
+        <% else %>
+          <%= link_to favorite_path(current_user.favorites.where(suggestion: @suggestion).first), data: {turbo_method: :delete} do %>
+            <i id="heart" class="fa-solid fa-heart love fa-2xl" style="color: #db3333;"></i>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+  <% if current_user.favorites.find_by(suggestion_id: @suggestion.id) %>
+    <div class="card mb-3 suggestion-cards" style='overflow: hidden'>
+      <div class="suggestion-cards-info">
+        <div id='spark-dates'>
+          <%= simple_form_for(current_user.favorites.find_by(suggestion_id: @suggestion.id)) do |f| %>
+            <%= f.input :occurs_on,
+                  placeholder: "",
+                  as: :string,
+                  input_html: { data: { controller: "datepicker"}} %>
+            <%# <button class="btn btn-primary btn-lg" data-controller="confirm-button" data-action="click->confirm-button#confirm">Click Me!</button> %>
+            <%= f.submit "Create Spark", id:"create-spark"%>
+          <% end %>
+          <% unless @suggestion.favorites.find_by(user_id: current_user.id).occurs_on == nil %>
+            <p>Your Spark is set!</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <div>
+  </div>
+  <div class="card mb-3 suggestion-cards" style='overflow: hidden;'>
+    <div class="suggestion-cards-info">
+      <h5
+        class="card-title"
+        style="padding-top: 18px; font-weight: 700; letter-spacing: 1px; padding-bottom: 5px;"
+      ><%= @suggestion.title %></h5>
+      <div>
+        <p class="card-text b-5"><i class="fa-solid fa-location-dot"></i>
+          <%= @suggestion.city %>
+          &nbsp;
+          <%= @suggestion.sub_category %>
+          &nbsp;
+          <i class="fa-solid fa-star" style="color: #992944; font-size: 14px">
+            <%= @suggestion.rating %></i>
+          <p class="pt-0 pb-0 mb-0">Description:</p>
+          <p>
+            <% if @suggestion.overview.length > 180 %>
+              <%= @suggestion.overview[0..180] %> ...
+            <% else %>
+              <%= @suggestion.overview %>
+            <% end %>
+          </p>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="card mb-3 suggestion-cards" style='overflow: hidden; margin-top:20px;'>
+    <div class="suggestion-cards-info">
+      <h5 class="card-title"
+              style="padding-top: 18px; font-weight: 700; letter-spacing: 1px; padding-bottom: 5px; "
             >Location</h5>
-            <p> Address: <span id="address"> </span> </p>
-            <div style="min-height:250px; margin-bottom:5px; z-index:0;">
-              <div
+      <p> Address: <span id="address"> </span> </p>
+      <div style="min-height:250px; margin-bottom:5px; z-index:0;">
+        <div
                 id="map"
                 style="position: relative; top: 15; width: 100%; min-height: 200px;"
               >
-                <span
+          <span
                   class="d-none"
                   id="coordinates"
                   data-longitude="<%= @suggestion.longitude %>"
                   data-latitude="<%= @suggestion.latitude %>"
                 ></span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
+    </div>
+  </div>
+  <script>
+    const coordinates = document.getElementById('coordinates');
+       const addressElement = document.getElementById('address');
 
+<<<<<<< HEAD
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const whatsappButton = document.getElementById("whatsapp-share-button");
@@ -87,8 +149,33 @@ document.addEventListener("DOMContentLoaded", function () {
     center: [coordinates.dataset.longitude, coordinates.dataset.latitude],
     zoom: 15
   });
+=======
+     accessToken = 'pk.eyJ1IjoicHJhY2hpMjUiLCJhIjoiY2xtM3Q1N2lyNDY0bTNxdGh1eG1vMW94MCJ9.eRtL5A5z0SDvt0ViEDskCw';
 
+     mapboxgl.accessToken = accessToken;
+     console.log(coordinates.dataset.longitude)
+     const map = new mapboxgl.Map({
+       container: 'map',
+       // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+       style: 'mapbox://styles/mapbox/streets-v12',
+       center: [coordinates.dataset.longitude, coordinates.dataset.latitude],
+       zoom: 15,
+     });
+>>>>>>> 2bff293c583b21a8744aafea34325105a7c9a723
 
+     map.addControl(
+       new mapboxgl.GeolocateControl({
+       positionOptions: {
+       enableHighAccuracy: true
+       },
+       // When active the map will receive updates to the device's location as it changes.
+       trackUserLocation: true,
+       // Draw an arrow next to the location dot to indicate which direction the device is heading.
+       showUserHeading: true
+       })
+     );
+
+<<<<<<< HEAD
   new mapboxgl.Marker()
   .setLngLat([coordinates.dataset.longitude, coordinates.dataset.latitude])
   .addTo(map);
@@ -111,3 +198,31 @@ document.addEventListener("DOMContentLoaded", function () {
         addressElement.textContent = 'Error fetching address';
     });
 </script>
+=======
+     new mapboxgl.Marker()
+     .setLngLat([coordinates.dataset.longitude, coordinates.dataset.latitude])
+     .addTo(map);
+
+     const apiUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates.dataset.longitude},${coordinates.dataset.latitude}.json?access_token=${accessToken}`;
+       // Make a GET request to the API
+     fetch(apiUrl)
+       .then(response => response.json())
+       .then(data => {
+         if (data.features && data.features.length > 0) {
+             const firstFeature = data.features[0];
+             const address = firstFeature.place_name;
+             addressElement.textContent = address;
+         } else {
+             addressElement.textContent = 'Address not found';
+         }
+     })
+     .catch(error => {
+         console.error('Error fetching address:', error);
+         addressElement.textContent = 'Error fetching address';
+     });
+
+      const carousel = new bootstrap.Carousel('#myCarousel', {
+       interval: 1000
+     })
+  </script>
+>>>>>>> 2bff293c583b21a8744aafea34325105a7c9a723

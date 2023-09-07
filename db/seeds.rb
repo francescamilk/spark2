@@ -56,11 +56,17 @@ def create_suggestions(query, city, category, sub_category)
 end
 
 def seed_database_openai(title, description, address, rating, city, category)
+  image_urls = []
+  3.times do
+    image_urls << "https://source.unsplash.com/random/?#{category}&#{rand(1..1000)}"
+  end
+
   suggestion = Suggestion.create!(
     title: title,
     overview: description,
     address: address,
     rating: rating,
+    images: image_urls,
     city: city,
     category: Category.find_by(title: category)
   )
@@ -86,7 +92,7 @@ def iterate_openai_ideas(category, city)
 end
 
 puts "Cleaning database"
-
+Favorite.destroy_all
 Suggestion.destroy_all
 Category.destroy_all
 
@@ -119,8 +125,7 @@ cities.each do |city|
   categories.each do |category|
     case category
     when 'Drinks'
-      # sub_categories = ['Cafe', 'Coffee', 'Pubs', 'Cocktail', 'Wine']
-      sub_categories = ['Coffee']
+      sub_categories = ['Cafe', 'Coffee', 'Pubs', 'Cocktail', 'Wine']
 
       sub_categories.each do |sub_category|
         puts ""
@@ -128,8 +133,7 @@ cities.each do |city|
         create_suggestions("#{sub_category}%20in%20#{city}", city, category, sub_category)
       end
     when 'Dining'
-      # sub_categories = ['Italian', 'French', 'Asian', 'American']
-      sub_categories = ['Italian']
+      sub_categories = ['Italian', 'French', 'Asian', 'American']
 
       sub_categories.each do |sub_category|
         puts ""
